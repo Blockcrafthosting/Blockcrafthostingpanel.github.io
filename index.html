@@ -1,18 +1,162 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BlockPanel</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BlockCraftHosting Panel</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #1b1b1b;
+    color: white;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background: #d32f2f;
+    padding: 15px 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  nav {
+    background: #b71c1c;
+    padding: 10px 20px;
+  }
+  nav a {
+    color: white;
+    margin-right: 15px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .container {
+    padding: 20px;
+  }
+  .server {
+    background: #2e2e2e;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+  }
+  button {
+    background: #d32f2f;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  input[type="text"], input[type="password"] {
+    padding: 8px;
+    margin-bottom: 15px;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+  }
+  form {
+    max-width: 400px;
+    margin: auto;
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Bienvenido a BlockPanel</h1>
-  </header>
-  <main>
-    <p>Panel de administración para BlockCraft Hosting.</p>
-  </main>
-  <script src="script.js"></script>
+
+<header>BlockCraftHosting Panel</header>
+<nav>
+  <a href="#" id="link-dashboard">Inicio</a>
+  <a href="#" id="link-login">Iniciar Sesión</a>
+  <a href="#" id="link-logout" style="display:none;">Cerrar Sesión</a>
+</nav>
+
+<div class="container" id="content">
+  <!-- Aquí se cargará el contenido dinámico -->
+</div>
+
+<script>
+  // Simulación de datos y estado de usuario
+  let userLoggedIn = false;
+  let userServers = [
+    { id: 1, name: "Servidor Minecraft 1", ip: "mc1.blockcraft.com", status: "online" },
+    { id: 2, name: "Servidor Minecraft 2", ip: "mc2.blockcraft.com", status: "offline" }
+  ];
+
+  const contentDiv = document.getElementById('content');
+  const linkLogin = document.getElementById('link-login');
+  const linkLogout = document.getElementById('link-logout');
+  const linkDashboard = document.getElementById('link-dashboard');
+
+  function showLogin() {
+    contentDiv.innerHTML = `
+      <h2>Iniciar Sesión</h2>
+      <form id="login-form">
+        <input type="text" id="username" placeholder="Usuario" required />
+        <input type="password" id="password" placeholder="Contraseña" required />
+        <button type="submit">Entrar</button>
+      </form>
+    `;
+    linkLogin.style.display = 'none';
+    linkLogout.style.display = 'inline';
+    linkDashboard.style.display = 'inline';
+
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      // Aquí iría la validación con backend real
+      userLoggedIn = true;
+      showDashboard();
+    });
+  }
+
+  function showDashboard() {
+    if (!userLoggedIn) {
+      showLogin();
+      return;
+    }
+
+    let serversHTML = userServers.map(server => `
+      <div class="server">
+        <h3>${server.name}</h3>
+        <p>IP: ${server.ip}</p>
+        <p>Estado: <strong>${server.status}</strong></p>
+        <button onclick="alert('Iniciar ${server.name}')">Iniciar</button>
+        <button onclick="alert('Parar ${server.name}')">Parar</button>
+        <button onclick="alert('Reiniciar ${server.name}')">Reiniciar</button>
+      </div>
+    `).join('');
+
+    contentDiv.innerHTML = `
+      <h2>Mis Servidores</h2>
+      ${serversHTML}
+    `;
+    linkLogin.style.display = 'none';
+    linkLogout.style.display = 'inline';
+  }
+
+  function logout() {
+    userLoggedIn = false;
+    contentDiv.innerHTML = '<h2>Has cerrado sesión.</h2>';
+    linkLogin.style.display = 'inline';
+    linkLogout.style.display = 'none';
+    linkDashboard.style.display = 'none';
+  }
+
+  linkLogin.addEventListener('click', (e) => {
+    e.preventDefault();
+    showLogin();
+  });
+
+  linkLogout.addEventListener('click', (e) => {
+    e.preventDefault();
+    logout();
+  });
+
+  linkDashboard.addEventListener('click', (e) => {
+    e.preventDefault();
+    showDashboard();
+  });
+
+  // Mostrar login al iniciar
+  showLogin();
+</script>
+
 </body>
 </html>
